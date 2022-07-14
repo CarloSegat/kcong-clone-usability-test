@@ -86,13 +86,3 @@ a:visited {
 a:active {
   color: darkcyan;
 }
-h1 {
-  display: inline;
-  font-weight: bold;
-  background-color: rgb(16, 87, 87);
-  color: hsl(0, 0%, 100%);
-  padding: 0.5rem;
-}
-h2 {
-  color: #222222;
-}
