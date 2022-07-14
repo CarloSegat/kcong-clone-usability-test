@@ -1,0 +1,80 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix cfrl: <http://www.cefriel.com/shacl-forms#> .
+@prefix schema: <http://schema.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .   
+
+cfrl:HeaderShape a sh:NodeShape ;
+    sh:targetClass dcat:Dataset ;
+    rdfs:label "Header shape" ;
+    sh:property
+        cfrl:DctTitleProperty ,
+        cfrl:DctDescProperty ,
+        cfrl:OptionalVersionProperty ,
+        cfrl:DctTypeProperty ,
+        cfrl:DcatLandingPageProperty .
+
+# description
+cfrl:DctDescProperty
+    sh:path dct:description ;
+    sh:name "Description" ;
+    sh:datatype xsd:string ;
+    dash:singleLine false ;
+    sh:maxCount 1 ;
+    sh:minCount 1 .
+
+# optional property
+cfrl:OptionalVersionProperty
+    sh:path cfrl:version ;
+    sh:name "Version" ;
+    sh:datatype xsd:string ;
+    sh:pattern "[0-9].[0-9].[0-9]" ;
+    dash:singleLine true .
+
+
+# title
+cfrl:DctTitleProperty
+    sh:path dct:title ;
+    sh:name "Title" ;
+    sh:datatype xsd:string ;
+    dash:singleLine true ;
+    sh:maxCount 1 ;
+    sh:minCount 1 .
+
+# type
+cfrl:DctTypeProperty
+    sh:path rdf:type ;
+    sh:name "Dct type" ;
+    dash:editor dash:InstancesSelectEditor ;
+    dash:hidden true ;
+    sh:class cfrl:AssetType ;
+    sh:message "This is a user-defined validation mssage to be displayed when the property type has an error" ;
+    sh:minCount 1 ;
+    sh:maxCount 1 .
+
+cfrl:DcatLandingPageProperty
+    sh:path  dcat:landingPage ;
+    sh:class foaf:Document ;
+    # sh:datatype xsd:anyURI ;
+    sh:node cfrl:LandingPageShape ;
+    sh:name "Landing Page" ;
+   	dash:singleLine true .
+    
+cfrl:LandingPageShape a sh:NodeShape ;
+    sh:targetClass foaf:Document ;
+    sh:property
+        cfrl:UrlOfLandingPageProperty .
+
+cfrl:UrlOfLandingPageProperty
+    sh:path  foaf:primaryTopic ;
+    sh:datatype xsd:anyURI ;
+    sh:name "URL" ;
+   	dash:singleLine true ;
+    sh:minCount 1 ;
+    sh:maxCount 1 .
+        
