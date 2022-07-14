@@ -3,13 +3,25 @@ import { createRouter, createWebHistory } from 'vue-router'
 import App from './App.vue'
 import './shacl-form-generator/shaclFormGenerator'
 
-import ShapeFormOutput from "./views/ShapeFormOutput.vue";
+import Home from "./views/Home.vue";
+import AssetsView from "./views/AssetsView.vue";
+import AddAsset from "./views/AddAsset.vue";
 
 const routes = [
   { 
     path: '/', 
-    component: ShapeFormOutput, 
+    component: Home, 
     name: "Home" 
+  }, 
+  { 
+    path: '/assets-view', 
+    component: AssetsView, 
+    name: "AssetsView" 
+  },
+  { 
+    path: '/add-asset', 
+    component: AddAsset, 
+    name: "AddAsset" 
   },
 ]
 
