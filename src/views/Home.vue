@@ -1,5 +1,12 @@
 <template>
 <div>
+  <h1>DCAT-AP Metadata Catalogue</h1>
+</div>
+<div>
+  <h2>Latest assets</h2>
+</div>
+<div>
+  <h2>Asset Types</h2>
   <ul>
     <li v-for="asset_type in asset_types"
       :key="asset_type.name"
