@@ -6,6 +6,7 @@ import './shacl-form-generator/shaclFormGenerator'
 import Home from "./views/Home.vue";
 import AssetsView from "./views/AssetsView.vue";
 import AddAsset from "./views/AddAsset.vue";
+import AssetView from "./views/AssetView.vue";
 
 const routes = [
   { 
@@ -22,6 +23,11 @@ const routes = [
     path: '/add-asset/:asset_type', 
     component: AddAsset, 
     name: "AddAsset" 
+  },
+  { 
+    path: '/asset/:asset_type/:asset_name/:asset_uri', 
+    component: AssetView, 
+    name: "AssetView" 
   },
 ]
 
