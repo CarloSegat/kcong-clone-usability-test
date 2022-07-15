@@ -1,6 +1,6 @@
 <template>
 <h1>Adding assets of type <b>{{this.$route.params.asset_type}}</b></h1>
-<div>
+<div v-if="bodyShapeClown !== null">
     <shaperone-form-gen
     .bodyShape="bodyShapeClown"
     @cefriel-form-submitted="formSubmittedCallback"
@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { generateQuads, ns } from '../utils'
+import { generateQuads, hardcodedAssetTypeToNameNodeMap } from '../utils'
 import clownface from 'clownface'
 import { dataset } from '@rdf-esm/dataset'
 
@@ -18,23 +18,43 @@ export default {
     async created() {
         console.log("this.$route.params.asset_type", this.$route.params.asset_type);
         const r = await fetch("http://localhost:8000/api/shacl-forms/"+this.$route.params.asset_type)
-        this.asset_schema = await r.json();
-        const bodyShapeQuads = await generateQuads(this.asset_schema.body_shape)
+        const asset_schema = await r.json();
+        const bodyShapeQuads = await generateQuads(asset_schema.body_shape)
         this.bodyShapeClown = clownface({dataset: dataset(bodyShapeQuads)})
-                              .namedNode(this.hardcodedAssetTypeToNameNodeMap[this.$route.params.asset_type])
-        console.log("🚀 . created . this.bodyShapeClown", this.bodyShapeClown)
+                              .namedNode(hardcodedAssetTypeToNameNodeMap[this.$route.params.asset_type])
     },
     data() {
         return {
-            bodyShapeClown: {},
-            hardcodedAssetTypeToNameNodeMap: {
-                'simpleTest': ns.cfrl.PetShape
-            }
+            bodyShapeClown: null
         }
     },
     methods: {
-        formSubmittedCallback: function(e) {
-            console.log("🚀 . e", e)
+        formSubmittedCallback: async function(e) {
+            const rdfString = e.detail.data;
+            const body = {
+                rdf_data: rdfString
+            }
+            const response = await fetch("http://localhost:8000/api/shacl-form-assets/"+this.$route.params.asset_type, 
+                {   
+                    method: "POST",
+                    body: JSON.stringify(body),
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8"
+                    }
+                }
+            )
+            const responseJson = await response.json();
+            console.log("🚀 . formSubmittedCallback:function . r", responseJson)
+            if(responseJson.ok){
+                this.$router.push({ 
+                name: 'AssetView', 
+                params: { 
+                    asset_name: asset.name,
+                    asset_type: this.$route.params.asset_type,
+                    asset_uri: asset.uri
+                } 
+            })
+            }
         }
     }
 }
