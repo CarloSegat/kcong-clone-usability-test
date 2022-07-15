@@ -6,6 +6,7 @@
     @cefriel-form-submitted="formSubmittedCallback"
   ></shaperone-form-gen>
 </div>
+
 </template>
 
 <script>
@@ -44,14 +45,14 @@ export default {
                 }
             )
             const responseJson = await response.json();
-            console.log("🚀 . formSubmittedCallback:function . r", responseJson)
-            if(responseJson.ok){
+            if(response.ok){
                 this.$router.push({ 
                 name: 'AssetView', 
                 params: { 
-                    asset_name: asset.name,
-                    asset_type: this.$route.params.asset_type,
-                    asset_uri: asset.uri
+                    asset_name: responseJson.asset_name,
+                    asset_type: responseJson.asset_type,
+                    asset_uri: responseJson.asset_uri,
+                    isJustAdded: true,
                 } 
             })
             }
