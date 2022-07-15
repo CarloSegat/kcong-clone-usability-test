@@ -13,9 +13,16 @@
 
 <ul>
     <li v-for="asset in assets"
-        :key="asset.name"
+        :key="asset.uri"
          @click="e => {
-            // this.$router.push({ name: 'AssetView', params: { name: asset_type.name } })
+            this.$router.push({ 
+                name: 'AssetView', 
+                params: { 
+                    asset_name: asset.name,
+                    asset_type: asset.asset_type,
+                    asset_uri: asset.uri
+                } 
+            })
             // TODO view single asset
          }"
     >
@@ -28,7 +35,6 @@
 export default {
     name: "AssetsView",
     async created() {
-        console.log("this.$route.params.asset_type", this.$route.params.asset_type);
         const r = await fetch("http://localhost:8000/api/shacl-form-assets/all/"+this.$route.params.asset_type)
         this.assets = await r.json();
 
