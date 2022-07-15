@@ -1,25 +1,27 @@
 <template>
 <div>
   <h1>DCAT-AP Metadata Catalogue</h1>
-</div>
-<div>
-  <h2>Latest assets</h2>
+  <summary>This metadata catalogue is for datasets that conform to the DCAT Application Profile (DCAT-AP)</summary>
 </div>
 <div>
   <h2>Asset Types</h2>
-  <ul>
-    <li v-for="asset_type in asset_types"
+  <div
+    style='display: flex; gap: 0.5rem;'>
+    <AssetTypeComponent v-for="asset_type in asset_types"
       :key="asset_type.name"
+      :name="asset_type.name"
       @click="e => this.$router.push({ name: 'AssetsView', params: { asset_type: asset_type.name } })">
     {{ asset_type.name }}
-</li>
-  </ul>
+</AssetTypeComponent>
+  </div>
 </div>
 </template>
 
 <script>
+import AssetTypeComponent from '../components/AssetTypeComponent.vue'
   export default {
     name: "Home",
+    components: {AssetTypeComponent},
     data() {
       return {
         asset_types: []

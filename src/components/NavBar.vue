@@ -3,7 +3,7 @@
   <img 
     style='width: 3rem;'
     src="https://pbs.twimg.com/profile_images/784383890865651712/pG1YAsHt_400x400.jpg">
-  <span class='navElement'>Datasets Metadata Catalogue</span>
+  <span class='navElement'>Datasets Catalogue</span>
   <span
     style='margin-left: auto; margin-right: 3rem;'
     @click="e => this.$router.push({ 

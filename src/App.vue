@@ -1,10 +1,15 @@
 <template>
+
   <main>
     <NavBar></NavBar>
-    <br>
-    <br>
-    <router-view></router-view>
+    <div
+      style='margin-block-start: 4rem;'>
+      <router-view>
+      </router-view>
+      <Footer/>
+    </div>
   </main>
+
   <span style="font-size: 3em; color: Tomato;">
       <i class="fas fa-camera"></i>
     </span>
@@ -12,10 +17,12 @@
 
 <script>
 import NavBar from './components/NavBar.vue'
+import Footer from './components/Footer.vue'
 
 export default {
   components: {
-    NavBar
+    NavBar,
+    Footer
   }
 }
 </script>
