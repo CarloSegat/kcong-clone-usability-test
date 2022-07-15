@@ -39,3 +39,7 @@ export async function generateQuads(strShapes: string)  {
     }
     return quads
 }
+
+export const hardcodedAssetTypeToNameNodeMap = {
+    'simpleTest': ns.cfrl.PetShape
+}
