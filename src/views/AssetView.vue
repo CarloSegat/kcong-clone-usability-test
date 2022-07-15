@@ -1,14 +1,36 @@
 <template>
-<h1>{{this.$route.params.asset_name}}</h1>
-<h3>{{this.$route.params.asset_type}}</h3>
-<div v-if="bodyShapeClown !== null && this.asset !== null">
-    <shaperone-form-gen
-        .bodyShape="bodyShapeClown"
-        .resource="assetClown"
-        .readonly="true"
-  ></shaperone-form-gen>
-</div>
-
+    <h1>{{this.$route.params.asset_name}}</h1>
+    <h3>{{this.$route.params.asset_type}}</h3>
+    <div v-if="bodyShapeClown !== null && this.asset !== null">
+        <shaperone-form-gen
+            .bodyShape="bodyShapeClown"
+            .resource="assetClown"
+            .readonly="true"
+    ></shaperone-form-gen>
+    </div>
+    <div>
+        <button
+            @click="e => this.$router.push({ 
+                name: 'AddAsset', 
+                params: { 
+                    asset_type: this.$route.params.asset_type,
+                    isJustAdded: true,
+                } 
+            })"
+        >
+            Add {{ this.$route.params.isJustAdded ? 'Another' : 'an' }} Asset of this Type
+        </button>
+        <button
+            @click="e => this.$router.push({ 
+                name: 'AssetsView', 
+                params: { 
+                    asset_type: this.$route.params.asset_type,
+                } 
+            })"
+        >
+            View All Assets of this Type
+        </button>
+    </div>
 </template>
 
 <script>
