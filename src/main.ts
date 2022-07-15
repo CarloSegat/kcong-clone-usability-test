@@ -10,7 +10,7 @@ import AssetView from "./views/AssetView.vue";
 
 const routes = [
   { 
-    path: '/', 
+    path: '/home', 
     component: Home, 
     name: "Home" 
   }, 

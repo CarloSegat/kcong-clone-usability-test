@@ -1,6 +1,4 @@
 <template>
-
-
 <div>
     <div>
         <h1>Assets page of {{this.$route.params.asset_type}}</h1>

@@ -1,5 +1,5 @@
 <template>
-  <div>{{this.name}}</div>
+  <div>{{this.uri}}</div>
 </template>
 
 <script lang="js">
