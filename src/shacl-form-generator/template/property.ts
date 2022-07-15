@@ -8,8 +8,6 @@ import { plusIcon } from '../assets/icons/icons'
 import { alignItemsVerticalCenterCSS, noBordersCSS, fieldContainerCSS, hooverCSS } from '../assets/style';
 
 export function property(renderer, { property }) {
-console.log("🚀 . property . property", typeof(property))
-console.log("🚀 . property . renderer", typeof(renderer))
 
     const { actions } = renderer
     const shapeNode = getThisShape();
@@ -53,7 +51,7 @@ console.log("🚀 . property . renderer", typeof(renderer))
                     title="Add value">
                         ${plusIcon} 
                     <div>
-                        Add ${property.name}
+                        Add ${property.uri}
                     </div>
                 </button>`
             : html``;

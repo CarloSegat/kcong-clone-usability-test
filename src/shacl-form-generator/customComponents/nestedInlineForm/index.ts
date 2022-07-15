@@ -13,15 +13,14 @@ export const nestedForm: SingleEditorComponent = {
   editor: dash.DetailsEditor,
 
   render({ value, renderer, property: { shape: { node } } }) {
-    console.log("🚀 . render . renderer", renderer)
-    console.log("🚀 . render . value", value)
+
     const focusNode = value.object
 
     if (isFocusNode(focusNode)) {
 
       renderer.property.componentState
 
-      return html`
+      return html` 
       <style>
           .nested-container {
               border: darkgray;

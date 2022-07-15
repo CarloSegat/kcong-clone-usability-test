@@ -1,21 +1,19 @@
 import { LitElement, css, html, type PropertyValueMap } from 'lit';
-import { customElement, property, state, query } from 'lit/decorators.js';
+import { customElement, property, query } from 'lit/decorators.js';
 import '@hydrofoil/shaperone-wc/shaperone-form'
-import { dataset, blankNode } from '@rdf-esm/dataset'
+import { dataset } from '@rdf-esm/dataset'
 import { ns } from './namespaces'
 import { turtle } from '@tpluscode/rdf-string'
 import type { ShaperoneForm } from '@hydrofoil/shaperone-wc';
-import type { NamespaceBuilder } from '@rdfjs/namespace';
-import clownface, { AnyPointer, GraphPointer, AnyContext } from 'clownface'
-import type DatasetExt from 'rdf-ext/lib/Dataset';
+import clownface, { AnyPointer } from 'clownface'
 import type NamedNode from 'rdf-js';
 import rdfFetch from '@rdfjs/fetch'
 // import type { component, editor, rendere } from '@hydrofoil/shaperone-wc/configure' 
-import { components, editors, renderer, validation } from '@hydrofoil/shaperone-wc/configure'
+import { components, renderer, validation } from '@hydrofoil/shaperone-wc/configure'
 import { validate } from '@hydrofoil/shaperone-rdf-validate-shacl'
 import { nestedForm } from './customComponents/nestedInlineForm'
 import { template } from './template/template'
-import { literal, namedNode } from '@rdf-esm/data-model';
+import { literal } from '@rdf-esm/data-model';
 import { textFieldEditor, instanceSelect } from './customComponents';
 import { paperPlane } from './assets/icons/icons';
 import { thinBorderBottomCSS, alignItemsVerticalCenterCSS, hooverCSS, fieldContainerCSS } from './assets/style';
@@ -43,7 +41,6 @@ export class SemanticForm extends LitElement {
 
   @property()
   bodyShape!: AnyPointer;
-
 
   // DEFAULTED CONFIGS 
   @property({ reflect: true })
@@ -120,6 +117,17 @@ export class SemanticForm extends LitElement {
   // Render the UI as a function of component state
   render() {
 
+    
+    const submitButtonHTML = this.readonly ? 
+    html`` : 
+    html`
+    <button
+      class='thinBorderBottom alignItemsVerticalCenter hoover fieldContainer'
+      @click="${this.submitCallback}">
+      <div>${paperPlane}</div>
+      <div>Submit</div>
+    </button>`
+    
     let headerHTML = this.headerShape !== null ?
       html`<shaperone-form
       .id=${'header-form'}
@@ -145,12 +153,7 @@ export class SemanticForm extends LitElement {
       >
       </shaperone-form>
 
-        <button
-          class='thinBorderBottom alignItemsVerticalCenter hoover fieldContainer'
-          @click="${this.submitCallback}">
-          <div>${paperPlane}</div>
-          <div>Submit</div>
-        </button>
+      ${submitButtonHTML}
     `;
   }
 
@@ -183,7 +186,7 @@ export class SemanticForm extends LitElement {
   }
 
   private changeCallback() {
-    console.log("this.headerForm?.isValid ", this.headerForm?.isValid);
+    // console.log("this.headerForm?.isValid ", this.headerForm?.isValid);
 
 
     let quadsWhereObjectIsEmptyString = this.resource?.dataset.match(null, null, literal(''))
