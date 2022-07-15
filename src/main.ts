@@ -14,12 +14,12 @@ const routes = [
     name: "Home" 
   }, 
   { 
-    path: '/assets-view', 
+    path: '/assets-view/:asset_type', 
     component: AssetsView, 
     name: "AssetsView" 
   },
   { 
-    path: '/add-asset', 
+    path: '/add-asset/:asset_type', 
     component: AddAsset, 
     name: "AddAsset" 
   },
