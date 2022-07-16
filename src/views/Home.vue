@@ -6,13 +6,17 @@
 <div>
   <h2>Asset Types</h2>
   <div
-    style='display: flex; gap: 0.5rem;'>
+    style='display: flex; gap: 0.5rem; flex-direction: row;'>
     <AssetTypeComponent v-for="asset_type in asset_types"
       :key="asset_type.name"
       :name="asset_type.name"
-      @click="e => this.$router.push({ name: 'AssetsView', params: { asset_type: asset_type.name } })">
+      :description="asset_type.description"
+      @click="e => this.$router.push({ 
+        name: 'AssetsView', 
+        params: { asset_type: asset_type.name, description: asset_type.description } 
+      })">
     {{ asset_type.name }}
-</AssetTypeComponent>
+    </AssetTypeComponent>
   </div>
 </div>
 </template>

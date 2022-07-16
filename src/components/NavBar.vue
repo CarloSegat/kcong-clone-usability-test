@@ -35,6 +35,7 @@ export default {
   width: 100vw;
   padding: 0.5rem;
   font-size: 17px;
+  z-index: 100;
 }
 
 .navElement {
