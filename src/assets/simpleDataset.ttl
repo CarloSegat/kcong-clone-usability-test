@@ -1,0 +1,93 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix cfrl: <http://www.cefriel.com/shacl-forms#> .
+@prefix schema: <http://schema.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .   
+
+cfrl:SimpleDatasetShape a sh:NodeShape ;
+    sh:targetClass dcat:Dataset ;
+    rdfs:label "A dataset described in a simple way" ;
+    sh:property
+        cfrl:DcatDescProperty ,
+        cfrl:DcatTitleProperty ,
+        cfrl:DcatDistributionProperty ,
+        cfrl:DcatPublisherProperty .
+        
+
+# description
+cfrl:DcatDescProperty
+    a sh:PropertyShape ;
+    sh:path dct:description ;
+    sh:name "Description" ;
+    sh:datatype xsd:string ;
+    dash:singleLine false ;
+    sh:maxCount 1 ;
+    sh:minCount 1 .
+
+# title
+cfrl:DcatTitleProperty
+    a sh:PropertyShape ;
+    sh:path dct:title ;
+    sh:name "Title" ;
+    sh:datatype xsd:string ;
+    dash:singleLine true ;
+    sh:maxCount 1 ;
+    sh:minCount 1 .
+
+cfrl:DcatDistributionProperty
+    a sh:PropertyShape ;
+    sh:path dcat:distribution ;
+    sh:name "Distribution" ;
+    sh:message "Please provide a URL for the dataset" ;
+    sh:node cfrl:DcatDistributionShape ;
+    sh:class dcat:Distribution ;
+    dash:viewer dash:DetailsViewer ;
+    sh:maxCount 1 ;
+    sh:minCount 1 .
+
+
+cfrl:DcatPublisherProperty
+    a sh:PropertyShape ;
+    sh:path dct:publisher ;
+    sh:name "Publisher" ;
+    sh:message "Please provide the publisher name" ;
+    sh:node cfrl:DcatPublisherShape ;
+    sh:class foaf:Agent ;
+    dash:viewer dash:DetailsViewer ;
+    sh:maxCount 1 ;
+    sh:minCount 1 .
+
+cfrl:DcatDistributionShape a sh:NodeShape ;
+    sh:targetClass dcat:Distribution ;
+    rdfs:label "A URL to a file" ;
+    sh:property [
+        sh:name "URL" ;
+        sh:message "";
+        sh:datatype xsd:anyUri ;
+        sh:path dcat:accessURL ;
+        dash:singleLine true ;
+        sh:maxCount 1 ;
+        sh:minCount 1 ;
+    ] .
+
+cfrl:DcatPublisherShape a sh:NodeShape ;
+    sh:targetClass foaf:Agent ;
+    rdfs:label "A URL to a file" ;
+    sh:property [
+        sh:name "Publisher" ;
+        sh:message "";
+        sh:datatype xsd:string ;
+        sh:path foaf:name ;
+        dash:singleLine true ;
+        sh:maxCount 1 ;
+        sh:minCount 1 ;
+    ] .
+
+
+
+    
