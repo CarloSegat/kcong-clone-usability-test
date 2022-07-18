@@ -66,5 +66,10 @@ export const fieldCSS = html`
     width: var(--field-width);
     font-size: var(--font-size);
   }
+  input:disabled {
+    cursor: default;
+    background-color: transparent;
+    opacity: 0.7;
+  }
 </style>
 `;
