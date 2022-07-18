@@ -4,5 +4,7 @@ export const ns = {
   cfrl: namespace('http://www.cefriel.com/shacl-forms#'),
   dash: namespace('http://datashapes.org/dash#'),
   dcat: namespace('http://www.w3.org/ns/dcat#'),
+  dct: namespace('http://purl.org/dc/terms/'),
   rdf: namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#'),
+  schema: namespace('http://schema.org/'),
 }
