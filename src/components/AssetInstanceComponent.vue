@@ -2,8 +2,7 @@
   <div class="assetContainerSingle">
     <div style="padding: 16px; max-height: 5rem;">
     
-      <h3
-      >{{this.name}}</h3>
+      <h3>{{this.name}}</h3>
       <div class="tooltipContainer">
         <div class="tooltip">URI: {{this.uri}}</div>
         <h4 class="oneLineHideOverflow">{{this.uri}}</h4>
