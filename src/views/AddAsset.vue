@@ -2,6 +2,7 @@
 <h1>Adding assets of type <b>{{this.$route.params.asset_type}}</b></h1>
 <div v-if="bodyShapeClown !== null">
     <shaperone-form-gen
+    .instancesURL="fetchThose"
     .bodyShape="bodyShapeClown"
     @cefriel-form-submitted="formSubmittedCallback"
   ></shaperone-form-gen>
@@ -23,10 +24,15 @@ export default {
         const bodyShapeQuads = await generateQuads(asset_schema.body_shape)
         this.bodyShapeClown = clownface({dataset: dataset(bodyShapeQuads)})
                               .namedNode(hardcodedAssetTypeToNameNodeMap[this.$route.params.asset_type])
+        this.fetchThose = [
+            'http://localhost:8000/api/shacl-forms/extra-data/theme', 
+            'http://localhost:8000/api/shacl-forms/extra-data/keyword'
+        ]
     },
     data() {
         return {
-            bodyShapeClown: null
+            bodyShapeClown: null,
+            fetchThose: []
         }
     },
     methods: {

@@ -14,9 +14,16 @@ import { validate } from '@hydrofoil/shaperone-rdf-validate-shacl'
 import { nestedForm } from './customComponents/nestedInlineForm'
 import { template } from './template/template'
 import { literal } from '@rdf-esm/data-model';
-import { textFieldEditor, instanceSelect, fileInputEditor, textArea } from './customComponents';
+import { textFieldEditor, 
+  instanceSelect, 
+  fileInputEditor, 
+  textArea,
+  multiSelectEditor } from './customComponents';
+
+
 import { paperPlane } from './assets/icons/icons';
 import { thinBorderBottomCSS, alignItemsVerticalCenterCSS, hooverCSS, fieldContainerCSS } from './assets/style';
+import stringToStream from 'string-to-stream';
 
 
 @customElement('shaperone-form-gen')
@@ -44,8 +51,7 @@ export class SemanticForm extends LitElement {
   // DEFAULTED CONFIGS 
   @property({ reflect: true })
   readonly: boolean = false;
-  @property()
-  instancesURL: string[] = [];
+  
   @property()
   propConflictStrategy: string = "keep-header"; // ignore
   @property()
@@ -75,34 +81,12 @@ export class SemanticForm extends LitElement {
     components.pushComponents({ nestedForm })
     renderer.setTemplates(template)
 
-    components.pushComponents({ textFieldEditor })
-    components.pushComponents({ instanceSelect })
-    components.pushComponents({ fileInputEditor })
-    components.pushComponents({ textArea })
+    components.pushComponents({ textFieldEditor, instanceSelect, fileInputEditor, textArea, multiSelectEditor })
 
     if (this.readonly) {
       this.makeAllPropertiesReadonly();
     }
-    this.fetchExtraResources();
     this.detectPropConflict();
-  }
-
-  private fetchExtraResources() {
-    this.instancesURL.forEach(async (url) => {
-      const res = await rdfFetch(url);
-      const dd = await res.dataset();
-      for (const quad of dd) {
-        // the fetched resources are added to:
-        // - header and body to make instanceSelector work
-        // - resource so that it passs the SHACL validation
-        // TODO adding all the fetched RDF to the resource is not
-        // efficient, instead a triple should be added only when the used
-        // picks an item from the dropdown
-        this.bodyShape.dataset.add(quad);
-        this.headerShape?.dataset.add(quad);
-        this.resource?.dataset.add(quad);
-      }
-    });
   }
 
   private makeAllPropertiesReadonly() {
@@ -195,7 +179,6 @@ export class SemanticForm extends LitElement {
 
   private changeCallback() {
     // console.log("this.headerForm?.isValid ", this.headerForm?.isValid);
-
 
     let quadsWhereObjectIsEmptyString = this.resource?.dataset.match(null, null, literal(''))
     let resourceWithoutEmptyStrings = this.resource?.dataset;

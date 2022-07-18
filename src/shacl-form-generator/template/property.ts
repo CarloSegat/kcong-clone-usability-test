@@ -18,6 +18,8 @@ export function property(renderer, { property }) {
 
     const addButtonHTML = generateHTMLAddButton()
 
+ 
+
     return html`
         ${alignItemsVerticalCenterCSS}
         ${fieldContainerCSS}
@@ -31,7 +33,8 @@ export function property(renderer, { property }) {
             }
 
         </style>
-        ${repeat(property.objects, object => html`
+        <!-- hack to avoid rendering a multiSelect element n times where n is the number of selected items -->
+        ${repeat(isMultiSelect() ? [property.objects[0]] : property.objects, object => html`
         
             <div class="fieldContainer">
                 <div>
@@ -46,7 +49,8 @@ export function property(renderer, { property }) {
         `)}`;
 
     function generateHTMLAddButton() {
-        return !property.selectedEditor && property.canAdd
+        
+        return !property.selectedEditor && property.canAdd && ! isMultiSelect()
             ? html`
                 <button 
                     class='alignItemsVerticalCenter noBorders hoover'
@@ -62,6 +66,7 @@ export function property(renderer, { property }) {
                     </div>
                 </button>`
             : html``;
+
     }
 
     function generateHTMLValidationMessage() {
@@ -92,5 +97,9 @@ export function property(renderer, { property }) {
         const cf = property.shape.pointer;
         const shapeNode = cf.has(ns.sh.name, property.name);
         return shapeNode;
+    }
+
+    function isMultiSelect() {
+        return shapeNode.out(ns.dash.editor).value?.includes("MultiSelect") || false;
     }
 }

@@ -17,7 +17,25 @@ cfrl:SimpleDatasetShape a sh:NodeShape ;
         cfrl:DcatDescProperty ,
         cfrl:DcatTitleProperty ,
         cfrl:DcatDistributionProperty ,
-        cfrl:DcatPublisherProperty .
+        cfrl:DcatPublisherProperty ,
+        [
+            sh:name "Keywords" ;
+            sh:message "";
+            sh:datatype xsd:string ;
+            sh:path dcat:keyword ;
+            dash:singleLine true ;
+            sh:minCount 1 ;
+            sh:severity sh:Info ;
+        ],
+        [
+            sh:name "Theme" ;
+            sh:message "";
+            sh:datatype xsd:string ;
+            sh:path skos:Concept ;
+            dash:singleLine true ;
+            sh:minCount 1 ;
+            sh:severity sh:Info ;
+        ] .
         
 
 # description
