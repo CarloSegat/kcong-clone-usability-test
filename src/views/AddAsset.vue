@@ -32,8 +32,12 @@ export default {
     methods: {
         formSubmittedCallback: async function(e) {
             const rdfString = e.detail.data;
+            console.log("🚀 . formSubmittedCallback:function . rdfString", rdfString)
+            console.log("e.detail.name ", e.detail.name);
             const body = {
-                rdf_data: rdfString
+                rdf_data: rdfString,
+                uri: e.detail.uri,
+                name: e.detail.name
             }
             const response = await fetch("http://localhost:8000/api/shacl-form-assets/"+this.$route.params.asset_type, 
                 {   

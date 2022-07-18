@@ -14,7 +14,7 @@ import { validate } from '@hydrofoil/shaperone-rdf-validate-shacl'
 import { nestedForm } from './customComponents/nestedInlineForm'
 import { template } from './template/template'
 import { literal } from '@rdf-esm/data-model';
-import { textFieldEditor, instanceSelect } from './customComponents';
+import { textFieldEditor, instanceSelect, fileInputEditor, textArea } from './customComponents';
 import { paperPlane } from './assets/icons/icons';
 import { thinBorderBottomCSS, alignItemsVerticalCenterCSS, hooverCSS, fieldContainerCSS } from './assets/style';
 
@@ -27,13 +27,12 @@ export class SemanticForm extends LitElement {
       color: black;
       --error-red: red;
       --field-width: 25rem;
-      --font-size: 1.1rem;
+      --font-size: 1rem;
     }
 
     shaperone-form::part(invalid) {
       border-color: #ff7575;
     }
-
   `;
   
   @property()
@@ -78,6 +77,8 @@ export class SemanticForm extends LitElement {
 
     components.pushComponents({ textFieldEditor })
     components.pushComponents({ instanceSelect })
+    components.pushComponents({ fileInputEditor })
+    components.pushComponents({ textArea })
 
     if (this.readonly) {
       this.makeAllPropertiesReadonly();
@@ -158,9 +159,16 @@ export class SemanticForm extends LitElement {
   }
 
   submitCallback() {
+    let dcatTitle = this.resource?.out(ns.dct.title).value
+    let schemaName = this.resource?.out(ns.schema.name).value
+    const resourceName = dcatTitle || schemaName || "Resource name not computed"
+    const resourceURI = this.resource?.value;
+    
     const event = new CustomEvent('cefriel-form-submitted', {
       detail: {
-        data: turtle`${this.resource?.dataset}`.toString()
+        data: turtle`${this.resource?.dataset}`.toString(),
+        name: resourceName,
+        uri: resourceURI
       }
     });
     this.dispatchEvent(event);
