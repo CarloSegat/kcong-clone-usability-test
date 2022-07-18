@@ -12,6 +12,20 @@ export const textFieldEditor = {
     },
 };
 
+export const fileInputEditor = {
+    editor: dash.FileInput,
+    async lazyRender() {
+        return (await import('./fileInput/fileInput')).fileInput;
+    },
+};
+
+export const textArea = {
+    editor: dash.TextAreaEditor,
+    async lazyRender() {
+        return (await import('./textArea')).textArea;
+    },
+};
+
 export const instanceSelect = {
     editor: dash.EnumSelectEditor,
     async lazyRender() {
