@@ -24,6 +24,13 @@ export function property(renderer, { property }) {
         ${noBordersCSS}
         ${hooverCSS}
         ${addButtonHTML}
+        <style>
+        
+            textarea {
+                width: var(--field-width);
+            }
+
+        </style>
         ${repeat(property.objects, object => html`
         
             <div class="fieldContainer">
@@ -70,8 +77,14 @@ export function property(renderer, { property }) {
 
     function generateHTMLAsteriskForMandatoryProp() {
         const minCount = shapeNode.out(ns.sh.minCount).value;
-
-        let asterisk = minCount === '1' ? html`<span>*&nbsp</span>` : html``;
+        const severityNodeValue = shapeNode.out(ns.sh.severity).value;
+        let isSevereViolation = true;
+        if(severityNodeValue !== undefined) {
+            isSevereViolation = ! shapeNode.out(ns.sh.severity).value.includes('Info');
+        }
+        
+        
+        let asterisk = minCount === '1' && isSevereViolation ? html`<span>*&nbsp</span>` : html``;
         return asterisk;
     }
 
