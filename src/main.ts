@@ -29,6 +29,8 @@ const routes = [
     component: AssetView, 
     name: "AssetView" 
   },
+  { path: '/', 
+    redirect: '/home' }
 ]
 
 const router = createRouter({
