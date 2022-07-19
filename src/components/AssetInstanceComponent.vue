@@ -1,11 +1,15 @@
 <template>
   <div class="assetContainerSingle">
     <div style="padding: 16px; max-height: 5rem;">
-    
-      <h3>{{this.name}}</h3>
+      <h3 class="oneLineHideOverflow">
+        {{this.name}}
+      </h3>
       <div class="tooltipContainer">
         <div class="tooltip">URI: {{this.uri}}</div>
-        <h4 class="oneLineHideOverflow">{{this.uri}}</h4>
+        <h4 
+          style="font-size: 10pt;" 
+          class="oneLineHideOverflow">{{this.uri}}
+        </h4>
       </div>
     </div>
     <hr class='divider'>
@@ -49,7 +53,6 @@ export default {
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
-    font-size: 10pt;
   }
   .tooltipContainer:hover .tooltip {
     visibility: visible !important;
