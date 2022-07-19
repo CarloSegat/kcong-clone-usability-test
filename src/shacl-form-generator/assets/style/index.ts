@@ -69,7 +69,7 @@ export const fieldCSS = html`
   input:disabled {
     cursor: default;
     background-color: transparent;
-    opacity: 0.7;
+    opacity: 0.8;
   }
 </style>
 `;

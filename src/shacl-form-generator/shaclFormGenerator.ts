@@ -1,5 +1,5 @@
 import { LitElement, css, html, type PropertyValueMap } from 'lit';
-import { customElement, property, query } from 'lit/decorators.js';
+import { customElement, property, queryAsync, state } from 'lit/decorators.js';
 import '@hydrofoil/shaperone-wc/shaperone-form'
 import { dataset } from '@rdf-esm/dataset'
 import { ns } from './namespaces'
@@ -14,11 +14,13 @@ import { validate } from '@hydrofoil/shaperone-rdf-validate-shacl'
 import { nestedForm } from './customComponents/nestedInlineForm'
 import { template } from './template/template'
 import { literal } from '@rdf-esm/data-model';
-import { textFieldEditor, 
-  instanceSelect, 
+import { 
+  textFieldEditor, 
   fileInputEditor, 
   textArea,
-  multiSelectEditor } from './customComponents';
+  multiSelectEditor,
+  datePickerEditor,
+  InstancesSelectEditor } from './customComponents';
 
 
 import { paperPlane } from './assets/icons/icons';
@@ -60,18 +62,26 @@ export class SemanticForm extends LitElement {
   resource?: AnyPointer;
   // END DEFAULTED CONFIGS 
 
-  @query('#header-form')
+  @queryAsync('#header-form')
   headerForm!: ShaperoneForm
 
-  @query('#body-form')
+  @queryAsync('#body-form')
   bodyForm!: ShaperoneForm
 
+  @state()
+  submitButtonHTML: any = html``
+
   protected shouldUpdate(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): boolean {
-    // avoid rendering the component if props are not available
+    if(this.bodyShape !== null) {
+      setTimeout(this.doSomethingWithFirst.bind(this), 1000)
+    }
     return this.bodyShape !== null
   }
 
-  protected async willUpdate(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): Promise<void> {
+  async connectedCallback() {
+    super.connectedCallback()
+  
+    console.log('connected')
 
     if (!this.resource) {
       this.resource = this.defaultResource();
@@ -81,12 +91,57 @@ export class SemanticForm extends LitElement {
     components.pushComponents({ nestedForm })
     renderer.setTemplates(template)
 
-    components.pushComponents({ textFieldEditor, instanceSelect, fileInputEditor, textArea, multiSelectEditor })
+    console.log("🚀 . SemanticForm . connectedCallback . renderer.ready()", renderer.ready())
+
+    components.pushComponents({ 
+      textFieldEditor, 
+      fileInputEditor, 
+      textArea, 
+      multiSelectEditor, 
+      datePickerEditor,
+      InstancesSelectEditor
+    })
 
     if (this.readonly) {
       this.makeAllPropertiesReadonly();
     }
-    this.detectPropConflict();
+    // this.detectPropConflict();
+    const targetNode = await this.bodyForm
+    console.log("🚀 . SemanticForm . connectedCallback . targetNode", targetNode)
+    console.log("🚀 . SemanticForm . connectedCallback . targetNode.shadowRoot", targetNode.shadowRoot)
+    
+    const config = { attributes: true, childList: true, subtree: true };
+
+    const callback = function(mutationList, observer) {
+        for(const mutation of mutationList) {
+            if (mutation.type === 'childList') {
+                console.log('A child node has been added or removed.');
+            }
+            else if (mutation.type === 'attributes') {
+                console.log('The ' + mutation.attributeName + ' attribute was modified.');
+            }
+            console.log("DIO PORCOOOOOOO");
+            
+        }
+    };
+
+    const observer = new MutationObserver(callback);
+    observer.observe(targetNode, config);
+
+  }
+
+  private doSomethingWithFirst() {
+    console.log("🚀 . SemanticForm . doSomethingWithFirst . this.readonly", this.readonly)
+      this.submitButtonHTML = this.readonly ? 
+        html`` : 
+        html`
+        <button
+          class='thinBorderBottom alignItemsVerticalCenter hoover fieldContainer'
+          @click="${this.submitCallback}">
+          <div>${paperPlane}</div>
+          <div>Submit</div>
+        </button>`
+        // this.requestUpdate()
   }
 
   private makeAllPropertiesReadonly() {
@@ -101,17 +156,8 @@ export class SemanticForm extends LitElement {
   }
   // Render the UI as a function of component state
   render() {
-
-    
-    const submitButtonHTML = this.readonly ? 
-    html`` : 
-    html`
-    <button
-      class='thinBorderBottom alignItemsVerticalCenter hoover fieldContainer'
-      @click="${this.submitCallback}">
-      <div>${paperPlane}</div>
-      <div>Submit</div>
-    </button>`
+    console.log("🚀 . SemanticForm . connectedCallback . renderer.ready()", renderer.ready())
+    console.log("bodyForm ", this.bodyForm);
     
     let headerHTML = this.headerShape !== null ?
       html`<shaperone-form
@@ -130,15 +176,16 @@ export class SemanticForm extends LitElement {
       ${fieldContainerCSS}
 
       ${headerHTML}
-      <shaperone-form
-        .id=${'body-form'}
-        .shapes=${this.bodyShape}
-        .resource=${this.resource}
-        @changed=${this.changeCallback}
-      >
-      </shaperone-form>
-
-      ${submitButtonHTML}
+      <div style='margin-bottom: 4rem;'>
+        <shaperone-form
+          id="body-form"
+          .shapes=${this.bodyShape}
+          .resource=${this.resource}
+          @changed=${this.changeCallback}
+        >
+        </shaperone-form>
+        ${this.submitButtonHTML}
+      </div>
     `;
   }
 
@@ -147,8 +194,10 @@ export class SemanticForm extends LitElement {
     let schemaName = this.resource?.out(ns.schema.name).value
     const resourceName = dcatTitle || schemaName || "Resource name not computed"
     const resourceURI = this.resource?.value;
+    console.log(turtle`${this.resource?.dataset}`.toString());
     
     const event = new CustomEvent('cefriel-form-submitted', {
+    
       detail: {
         data: turtle`${this.resource?.dataset}`.toString(),
         name: resourceName,
@@ -195,7 +244,7 @@ export class SemanticForm extends LitElement {
 
     let result = clownface({ dataset: dataset() })
       .namedNode(this.resourceURI.value.toString() + "/" + Math.floor(Math.random() * 999999))
-      .addOut(ns.rdf.type, typeExpectedByBody)
+      .addOut(ns.rdf.type, typeExpectedByBody.term || typeExpectedByBody.terms[0])
 
     if (typeExpectedByHeader) {
       result.addOut(ns.rdf.type, typeExpectedByBody);

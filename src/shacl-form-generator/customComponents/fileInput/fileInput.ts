@@ -36,7 +36,6 @@ export const fileInput = function ({ property, value }, { update }) {
         @input="${async (e) => {
             console.log(e.target.files[0].name)
             let base64file = await getBase64(e.target.files[0])
-            console.log("🚀 . bsbsbs", base64file)
             update(base64file)
         }}"
         >`

@@ -15,6 +15,13 @@ export const textFieldEditor = {
     },
 };
 
+export const datePickerEditor = {
+    editor: dash.DatePickerEditor,
+    async lazyRender() {
+        return (await import('./datePicker')).datePicker('date');
+    },
+};
+
 export const multiSelectEditor = {
     editor: dash.MultiSelect,
     async lazyRender() {
@@ -41,7 +48,6 @@ export const multiSelectEditor = {
     },
     init({ focusNode, form, property, value: { componentState }, updateComponentState }) {
 
-        console.log("🚀 . init . property", property)
         
         if(!componentState.options && !componentState.loading) {
             updateComponentState({
@@ -53,10 +59,8 @@ export const multiSelectEditor = {
                 const resJson = await res.json();
                 const quads = await this.generateQuads(resJson)
                 let subjects = dataset(quads).match(null, ns.rdf.type, null).quads
-                console.log("🚀 . subjects", subjects)
                 let pointers = []
                 subjects.forEach(q => {
-                    console.log("🚀 . q.value.subject", q.subject.value)
                     let smallDataset = dataset(quads).match(q.subject, null, null)
                     pointers.push(clownface({dataset: smallDataset}).namedNode(q.subject))
                 });
@@ -67,16 +71,12 @@ export const multiSelectEditor = {
                         term: pointer,
                         label: pointer.out(ns.rdfs.label).value ,
                       })
-                    console.log("🚀 . options", options)
                 }
 
                 let selected = []
                 if(property.objects && property.objects.length > 0) {
                     const values = property.objects.map(o => o.object)
                     selected = options.filter(lang => values.find(object => object?.term.equals(lang.term.term)))
-                    console.log("🚀 . selected", selected)
-
-                    
                 }
 
                 updateComponentState({
@@ -107,32 +107,44 @@ export const textArea = {
     },
 };
 
-export const instanceSelect = {
-    editor: dash.EnumSelectEditor,
+export const InstancesSelectEditor = {
+    editor: dash.InstancesSelectEditor,
     async lazyRender() {
-        return (await import('./instanceSelect/instanceSelect')).instanceSelect;
+        return (await import('./instanceSelect/instanceSelect')).instancesSelect;
     },
-    init({ focusNode, form, property, value: { componentState }, updateComponentState }) {
-        if (!componentState.choices && !componentState.loading) {
+    shouldLoad({ value: { componentState } }) {
+        return !componentState.instances;
+    },
+    init(params) {
+        const { form, value, updateComponentState } = params;
+        if (this.shouldLoad(params) && !value.componentState.loading) {
             updateComponentState({
                 loading: true,
             });
             (async () => {
-                const pointers = await this.loadChoices({ focusNode, property: property.shape });
-                const choices = pointers.map(ptr => [ptr, this.label(ptr, form)])
+                const pointers = await this.loadChoices(params);
+                const instances = pointers.map(ptr => [ptr, this.label(ptr, form)])
                     .sort(this.sort);
                 updateComponentState({
-                    choices,
+                    instances,
                     ready: true,
                     loading: false,
                 });
             })();
             return false;
         }
-        return !componentState.loading;
+        return !value.componentState.loading;
+    },
+    async loadInstance({ property, value }) {
+        return property.pointer.node(value);
     },
     async loadChoices({ property }) {
-        return property.pointer.node(property.in).toArray();
+        if (property.shape.class) {
+            return property.shape.pointer.any()
+                .has(ns.rdf.type, property.shape.class.id)
+                .toArray();
+        }
+        return [];
     },
     label,
     sort,

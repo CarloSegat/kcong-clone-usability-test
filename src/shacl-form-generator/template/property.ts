@@ -61,8 +61,10 @@ export function property(renderer, { property }) {
                 }}" 
                     title="Add value">
                         ${plusIcon} 
-                    <div>
-                        Add ${property.uri}
+                    <div
+                        // style='font-size: var(--font-size)'    
+                    >
+                        Add ${taggedLiteral(property.shape, { property: sh.name })}
                     </div>
                 </button>`
             : html``;
