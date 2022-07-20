@@ -53,6 +53,9 @@ export class SemanticForm extends LitElement {
   // DEFAULTED CONFIGS 
   @property({ reflect: true })
   readonly: boolean = false;
+
+  @state({})
+  isValid: boolean = false;
   
   @property()
   propConflictStrategy: string = "keep-header"; // ignore
@@ -78,7 +81,6 @@ export class SemanticForm extends LitElement {
   async connectedCallback() {
     super.connectedCallback()
   
-    console.log('connected')
 
     if (!this.resource) {
       this.resource = this.defaultResource();
@@ -104,17 +106,13 @@ export class SemanticForm extends LitElement {
     }
     // this.detectPropConflict();
     let targetNode = await this.bodyForm
-    console.log("🚀 . SemanticForm . connectedCallback . targetNode.attributes[0].ownerElement.hasUpdated", targetNode.attributes[0].ownerElement.hasUpdated)
     this.bodyForm.then(resolv => {
-      console.log("okokokok resolved");
       setTimeout((() => this.isHidden = false).bind(this), 250)
-      
     })
 
   }
 
   private makeAllPropertiesReadonly() {
-    // console.log("makeAllPropertiesReadonly");
 
     this.bodyShape
       .out(ns.sh.property)
@@ -123,10 +121,13 @@ export class SemanticForm extends LitElement {
     this.headerShape?.out(ns.sh.property)
       .addOut(ns.dash.readOnly, true)
   }
+  protected firstUpdated(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
+    // this.changeCallback()
+    this.isValid = false;
+    setTimeout((() => this.isValid = false).bind(this), 250)
+  }
   // Render the UI as a function of component state
   render() {
-    console.log("🚀 . SemanticForm . connectedCallback . renderer.ready()", renderer.ready())
-    console.log("bodyForm ", this.bodyForm);
     
     let headerHTML = this.headerShape !== null ?
       html`<shaperone-form
@@ -139,13 +140,12 @@ export class SemanticForm extends LitElement {
       : html``
 
       // ?hidden=${this.bodyForm.attributes || true}
-    console.log("! this.bodyForm?.attributes || ! this.bodyForm?.attributes[0].ownerElement.hasUpdated");
-    console.log(! this.bodyForm?.attributes || ! this.bodyForm?.attributes[0].ownerElement.hasUpdated);
     
     const submitButtonHTML = this.readonly ? 
         html`` : 
         html`
         <button
+          ?disabled=${! this.isValid}
           class='thinBorderBottom alignItemsVerticalCenter hoover fieldContainer'
           @click="${this.submitCallback}">
           <div>${paperPlane}</div>
@@ -193,10 +193,6 @@ export class SemanticForm extends LitElement {
     this.dispatchEvent(event);
   }
 
-  private printRDF(temp, ...args: String[]) {
-    console.log(args[0], turtle`${temp?.dataset}`.toString());
-  }
-
   private detectPropConflict() {
 
     if (this.propConflictStrategy == 'ignore') return;
@@ -215,11 +211,25 @@ export class SemanticForm extends LitElement {
   private changeCallback() {
     // console.log("this.headerForm?.isValid ", this.headerForm?.isValid);
 
+    
     let quadsWhereObjectIsEmptyString = this.resource?.dataset.match(null, null, literal(''))
     let resourceWithoutEmptyStrings = this.resource?.dataset;
     quadsWhereObjectIsEmptyString.quads.forEach(q => {
       resourceWithoutEmptyStrings.delete(q)
     });
+
+    this.bodyForm.then(bf => {
+      console.log("ciaooo", bf.state);
+      this.isValid = ! bf.state.hasErrors
+      setTimeout(
+        () => {
+          this.bodyForm.then(bf => 
+            this.isValid = ! bf.state.hasErrors
+        )}, 
+        200)
+    })
+    console.log("🚀 . SemanticForm . changeCallback . ! this.bodyForm?.state?.hasErrors", this.bodyForm?.state)
+    
   }
 
   private defaultResource(): AnyPointer {
