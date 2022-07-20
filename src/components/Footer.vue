@@ -22,9 +22,9 @@ export default {
   align-items: center;
   background-color: rgb(242, 242, 242);
   width: 100vw;
-  height: 4rem;
+  height: 2rem;
   padding: 0.5rem;
-  font-size: 17px; 
+  font-size: 12px; 
   place-content: center;
 }
 

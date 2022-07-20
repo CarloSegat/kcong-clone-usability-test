@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1>{{this.$route.params.asset_name}}</h1>
-        <div style="display: grid; grid-template-columns: 80% 20%">
+        <div style="display: grid; grid-template-columns: 80% 20%; grid-template-rows: repeat(10, 4rem);">
             <div>
                 <h3 style="width: fit-content">Asset type: {{this.$route.params.asset_type}}</h3>
             </div>
@@ -31,9 +31,10 @@
             </button>
 
         <div 
-        style="grid-row-start: 2"
-        v-if="bodyShapeClown !== null && this.asset !== null">
+            style="margin-top: -6rem;"
+            >
             <shaperone-form-gen
+                v-if="bodyShapeClown !== null && this.asset !== null"
                 .bodyShape="bodyShapeClown"
                 .resource="assetClown"
                 .readonly="true"

@@ -17,8 +17,10 @@
 <div><h2>Assets availbale:</h2></div>
 
 <div
+    v-if="assets && assets.length > 0"
     class="containerAssetInstances">
-    <AssetInstanceComponent v-for="asset in assets"
+    <AssetInstanceComponent 
+    v-for="asset in assets"
         :name="asset.name"
         :uri="asset.uri"
         :key="asset.uri"
@@ -34,6 +36,9 @@
          }"
     >
     </AssetInstanceComponent>
+</div>
+<div v-else>
+    There is no asset to show
 </div>
 </template>
 

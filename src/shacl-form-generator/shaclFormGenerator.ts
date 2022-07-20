@@ -69,12 +69,9 @@ export class SemanticForm extends LitElement {
   bodyForm!: ShaperoneForm
 
   @state()
-  submitButtonHTML: any = html``
+  isHidden = true;
 
   protected shouldUpdate(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): boolean {
-    if(this.bodyShape !== null) {
-      setTimeout(this.doSomethingWithFirst.bind(this), 1000)
-    }
     return this.bodyShape !== null
   }
 
@@ -106,42 +103,14 @@ export class SemanticForm extends LitElement {
       this.makeAllPropertiesReadonly();
     }
     // this.detectPropConflict();
-    const targetNode = await this.bodyForm
-    console.log("🚀 . SemanticForm . connectedCallback . targetNode", targetNode)
-    console.log("🚀 . SemanticForm . connectedCallback . targetNode.shadowRoot", targetNode.shadowRoot)
-    
-    const config = { attributes: true, childList: true, subtree: true };
+    let targetNode = await this.bodyForm
+    console.log("🚀 . SemanticForm . connectedCallback . targetNode.attributes[0].ownerElement.hasUpdated", targetNode.attributes[0].ownerElement.hasUpdated)
+    this.bodyForm.then(resolv => {
+      console.log("okokokok resolved");
+      setTimeout((() => this.isHidden = false).bind(this), 250)
+      
+    })
 
-    const callback = function(mutationList, observer) {
-        for(const mutation of mutationList) {
-            if (mutation.type === 'childList') {
-                console.log('A child node has been added or removed.');
-            }
-            else if (mutation.type === 'attributes') {
-                console.log('The ' + mutation.attributeName + ' attribute was modified.');
-            }
-            console.log("DIO PORCOOOOOOO");
-            
-        }
-    };
-
-    const observer = new MutationObserver(callback);
-    observer.observe(targetNode, config);
-
-  }
-
-  private doSomethingWithFirst() {
-    console.log("🚀 . SemanticForm . doSomethingWithFirst . this.readonly", this.readonly)
-      this.submitButtonHTML = this.readonly ? 
-        html`` : 
-        html`
-        <button
-          class='thinBorderBottom alignItemsVerticalCenter hoover fieldContainer'
-          @click="${this.submitCallback}">
-          <div>${paperPlane}</div>
-          <div>Submit</div>
-        </button>`
-        // this.requestUpdate()
   }
 
   private makeAllPropertiesReadonly() {
@@ -169,6 +138,20 @@ export class SemanticForm extends LitElement {
     </shaperone-form>`
       : html``
 
+      // ?hidden=${this.bodyForm.attributes || true}
+    console.log("! this.bodyForm?.attributes || ! this.bodyForm?.attributes[0].ownerElement.hasUpdated");
+    console.log(! this.bodyForm?.attributes || ! this.bodyForm?.attributes[0].ownerElement.hasUpdated);
+    
+    const submitButtonHTML = this.readonly ? 
+        html`` : 
+        html`
+        <button
+          class='thinBorderBottom alignItemsVerticalCenter hoover fieldContainer'
+          @click="${this.submitCallback}">
+          <div>${paperPlane}</div>
+          <div>Submit</div>
+        </button>`
+  
     return html`
       ${alignItemsVerticalCenterCSS}
       ${thinBorderBottomCSS}
@@ -176,7 +159,10 @@ export class SemanticForm extends LitElement {
       ${fieldContainerCSS}
 
       ${headerHTML}
-      <div style='margin-bottom: 4rem;'>
+
+      <div 
+        ?hidden=${this.isHidden}
+        style='margin-bottom: 8rem;'>
         <shaperone-form
           id="body-form"
           .shapes=${this.bodyShape}
@@ -184,7 +170,7 @@ export class SemanticForm extends LitElement {
           @changed=${this.changeCallback}
         >
         </shaperone-form>
-        ${this.submitButtonHTML}
+        ${submitButtonHTML}
       </div>
     `;
   }
