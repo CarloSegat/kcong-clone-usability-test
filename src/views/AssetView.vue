@@ -31,7 +31,7 @@
             </button>
 
         <div 
-            style="margin-top: -6rem;"
+            style="margin-top: -6rem; margin-bottom: 23rem;"
             >
             <shaperone-form-gen
                 v-if="bodyShapeClown !== null && this.asset !== null"
