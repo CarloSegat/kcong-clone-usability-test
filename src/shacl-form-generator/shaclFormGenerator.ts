@@ -167,7 +167,9 @@ export class SemanticForm extends LitElement {
           id="body-form"
           .shapes=${this.bodyShape}
           .resource=${this.resource}
-          @changed=${this.changeCallback}
+          @keydown=${this.changeCallback}
+          @change=${this.changeCallback}
+          @blur=${this.changeCallback}
         >
         </shaperone-form>
         ${submitButtonHTML}
@@ -209,26 +211,29 @@ export class SemanticForm extends LitElement {
   }
 
   private changeCallback() {
-    // console.log("this.headerForm?.isValid ", this.headerForm?.isValid);
-
     
     let quadsWhereObjectIsEmptyString = this.resource?.dataset.match(null, null, literal(''))
+    console.log("🚀 . SemanticForm . changeCallback . quadsWhereObjectIsEmptyString", quadsWhereObjectIsEmptyString)
     let resourceWithoutEmptyStrings = this.resource?.dataset;
     quadsWhereObjectIsEmptyString.quads.forEach(q => {
       resourceWithoutEmptyStrings.delete(q)
+      console.log("deleting");
+      
     });
 
     this.bodyForm.then(bf => {
-      console.log("ciaooo", bf.state);
+      console.log("🚀 . SemanticForm . changeCallback . bf", bf)
       this.isValid = ! bf.state.hasErrors
       setTimeout(
         () => {
-          this.bodyForm.then(bf => 
-            this.isValid = ! bf.state.hasErrors
+          this.bodyForm.then(bf => {
+            console.log("🚀 . SemanticForm . changeCallback . this.isValid", this.isValid)
+            return this.isValid = ! bf.state.hasErrors
+          }
         )}, 
         200)
     })
-    console.log("🚀 . SemanticForm . changeCallback . ! this.bodyForm?.state?.hasErrors", this.bodyForm?.state)
+    
     
   }
 

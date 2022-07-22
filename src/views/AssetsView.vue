@@ -1,54 +1,76 @@
 <template>
-<div>
-    <div style="display:flex; align-items: center">
-        <h1>Assets of type {{this.$route.params.asset_type}}</h1>
+    <div class="contentSection">
+        <div>
+            <div style="display:flex; align-items: center">
+                <h1>Assets of type {{this.$route.params.asset_type}}</h1>
+                <div
+                    class="addIconContainer"
+                    @click="e => this.$router.push({ name: 'AddAsset', params: { asset_type: this.$route.params.asset_type } })"
+                >
+                <span>+</span>
+                </div>
+            </div>
+            <div>
+                <span>{{this.$route.params.description}}</span>
+            </div>
+            
+        </div>
+        <div><h2>Assets availbale:</h2></div>
+
         <div
-            class="addIconContainer"
-        @click="e => this.$router.push({ name: 'AddAsset', params: { asset_type: this.$route.params.asset_type } })"
-        >
-        <span>+</span>
+            v-if="assets && assets.length > 0"
+            class="containerAssetInstances">
+            <AssetInstanceComponent 
+            v-for="asset in assets"
+                :name="asset.name"
+                :uri="asset.uri"
+                :key="asset.uri"
+                @click="e => {
+                    this.$router.push({ 
+                        name: 'AssetView', 
+                        params: { 
+                            asset_name: asset.name,
+                            asset_type: asset.asset_type,
+                            asset_uri: asset.uri,
+                            asset_id: asset.id
+                        } 
+                    })
+                }"
+            >
+            </AssetInstanceComponent>
+            <AddAssetComponent 
+            :name="'Add new asset'"
+            :uri="''"
+            :key="12121212"
+                @click="e => {
+                    this.$router.push({ 
+                        name: 'AssetView', 
+                        params: { 
+                            asset_name: asset.name,
+                            asset_type: asset.asset_type,
+                            asset_uri: asset.uri,
+                            asset_id: asset.id
+                        } 
+                    })
+                }"
+            >
+            </AddAssetComponent>
         </div>
     </div>
-    <div>
-        <span>{{this.$route.params.description}}</span>
-    </div>
-    
-</div>
-<div><h2>Assets availbale:</h2></div>
-
-<div
-    v-if="assets && assets.length > 0"
-    class="containerAssetInstances">
-    <AssetInstanceComponent 
-    v-for="asset in assets"
-        :name="asset.name"
-        :uri="asset.uri"
-        :key="asset.uri"
-         @click="e => {
-            this.$router.push({ 
-                name: 'AssetView', 
-                params: { 
-                    asset_name: asset.name,
-                    asset_type: asset.asset_type,
-                    asset_uri: asset.uri
-                } 
-            })
-         }"
-    >
-    </AssetInstanceComponent>
-</div>
-<div v-else>
-    There is no asset to show
-</div>
+    <Footer/>
 </template>
 
 <script>
 import AssetInstanceComponent from '../components/AssetInstanceComponent.vue'
+import AddAssetComponent from '../components/AddAssetComponent.vue'
+import Footer from '../components/Footer.vue'
 
 export default {
     name: "AssetsView",
     components: {
-        AssetInstanceComponent
+        AssetInstanceComponent,
+        Footer,
+        AddAssetComponent
     },
     async created() {
         const r = await fetch("http://localhost:8000/api/shacl-form-assets/all/"+this.$route.params.asset_type)
@@ -74,6 +96,7 @@ export default {
 }
 
 .addIconContainer {
+    cursor: pointer;
     margin-left : auto;
     border-radius: 100%;
     background-color: var(--vt-c-white-mute);

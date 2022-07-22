@@ -3,10 +3,10 @@
   <main>
     <NavBar></NavBar>
     <div
-      style='margin-block-start: 4rem;'>
+      style='min-height: 100vh;'>
       <router-view>
       </router-view>
-      <Footer/>
+      
     </div>
   </main>
 
@@ -17,12 +17,10 @@
 
 <script>
 import NavBar from './components/NavBar.vue'
-import Footer from './components/Footer.vue'
 
 export default {
   components: {
     NavBar,
-    Footer
   }
 }
 </script>
@@ -32,7 +30,7 @@ export default {
 @import './assets/base.css';
 
 #app {
-  padding: 2rem;
+  /* padding: 2rem; */
   font-weight: normal;
 }
 

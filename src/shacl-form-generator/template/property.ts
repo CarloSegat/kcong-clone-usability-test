@@ -74,8 +74,17 @@ export function property(renderer, { property }) {
     function generateHTMLValidationMessage() {
         let validationMessageHTML = html``;
         if (property.validationResults.length > 0) {
-            const valRes = property.validationResults[0].result.pointer;
-            const validationMessage = valRes.has(ns.sh.sourceShape, shapeNode.term).out(ns.sh.resultMessage).value;
+            const validationClownface = property.validationResults[0].result.pointer;
+            // console.log("🚀 . generateHTMLValidationMessage . validationClownface", validationClownface)
+            // console.log("🚀 . generateHTMLValidationMessage . property", property)
+            // let temp = validationClownface.out(ns.sh.Severity)
+            // console.log("🚀 . generateHTMLValidationMessage . temp", temp)
+            // let temp2 = validationClownface.out(ns.sh.severity)
+            // console.log("🚀 . generateHTMLValidationMessage . temp2", temp2)
+            // let temp3 = validationClownface.out(ns.sh.resultSeverity)
+            // console.log("🚀 . generateHTMLValidationMessage . temp3", temp3)
+            
+            const validationMessage = validationClownface.has(ns.sh.sourceShape, shapeNode.term).out(ns.sh.resultMessage).value;
             validationMessageHTML = html`<span style='color:var(--error-red);
         ;'>${validationMessage}</span>`;
         }

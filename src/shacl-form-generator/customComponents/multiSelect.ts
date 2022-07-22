@@ -25,7 +25,7 @@ export const multiSelect = function ({ property, value, updateComponentState }, 
       }
 
       function scrollDownBecauseTheMultiselectComboIsBuggy(e: any) {
-        window.scrollBy(0,10);
+        window.scrollBy(0,150);
       }
 
       return html`
@@ -40,7 +40,8 @@ export const multiSelect = function ({ property, value, updateComponentState }, 
             .invalid="${property.hasErrors}"
             .errorMessage="${property.validationResults.map(({ result }) => result.resultMessage).join('; ')}"
             ${readOnly(property)}
-            @change="${setValues}">
+            @change="${setValues}"
+            @focusout=${() => window.scrollBy(0,-150)}>
         </multiselect-combo-box>
     </div>`
     }

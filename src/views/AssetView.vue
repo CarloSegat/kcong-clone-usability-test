@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <div class="contentSection">
         <h1>{{this.$route.params.asset_name}}</h1>
-        <div style="display: grid; grid-template-columns: 80% 20%; grid-template-rows: repeat(10, 4rem);">
+        <div style="display: grid; grid-template-columns: 80% 20%; grid-template-rows: auto auto auto auto;">
             <div>
                 <h3 style="width: fit-content">Asset type: {{this.$route.params.asset_type}}</h3>
             </div>
@@ -31,7 +31,7 @@
             </button>
 
         <div 
-            style="margin-top: -6rem; margin-bottom: 23rem;"
+            style="margin-top: -6rem;"
             >
             <shaperone-form-gen
                 v-if="bodyShapeClown !== null && this.asset !== null"
@@ -39,15 +39,10 @@
                 .resource="assetClown"
                 .readonly="true"
             ></shaperone-form-gen>
+            </div>
         </div>
-            
-        </div>
-        
     </div>
-    
-    
-    <div>
-    </div>
+    <Footer/>
 </template>
 
 <script>
@@ -55,11 +50,15 @@ import { generateQuads, hardcodedAssetTypeToNameNodeMap } from '../utils'
 import clownface from 'clownface'
 import { dataset } from '@rdf-esm/dataset'
 import { namedNode } from '@rdfjs/data-model'
+import Footer from '../components/Footer.vue'
 
 export default {
     name: "AssetView",
+    components: {
+        Footer
+    },
     async created() {
-        const assetReq = await fetch("http://localhost:8000/api/shacl-form-assets/"+this.$route.params.asset_type+'/'+this.$route.params.asset_name)
+        const assetReq = await fetch("http://localhost:8000/api/shacl-form-assets/"+this.$route.params.asset_type+'/'+this.$route.params.asset_id)
         const temp = await assetReq.json();
         const assetQuads = await generateQuads(temp.rdf_data)
         this.assetClown = clownface({dataset: dataset(assetQuads)})

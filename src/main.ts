@@ -25,7 +25,7 @@ const routes = [
     name: "AddAsset" 
   },
   { 
-    path: '/asset/:asset_type/:asset_name/:asset_uri', 
+    path: '/asset/:asset_type/:asset_name/:asset_id', 
     component: AssetView, 
     name: "AssetView" 
   },

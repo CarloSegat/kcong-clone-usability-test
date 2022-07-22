@@ -1,22 +1,27 @@
 <template>
-<h1>Adding assets of type <b>{{this.$route.params.asset_type}}</b></h1>
-<div v-if="bodyShapeClown !== null">
-    <shaperone-form-gen
-    .instancesURL="fetchThose"
-    .bodyShape="bodyShapeClown"
-    @cefriel-form-submitted="formSubmittedCallback"
-  ></shaperone-form-gen>
-</div>
-
+    <div class="contentSection">
+        <h1>Adding assets of type <b>{{this.$route.params.asset_type}}</b></h1>
+        <div v-if="bodyShapeClown !== null">
+            <shaperone-form-gen
+                .bodyShape="bodyShapeClown"
+                @cefriel-form-submitted="formSubmittedCallback">
+            </shaperone-form-gen>
+        </div>
+    </div>
+    <Footer/>
 </template>
 
 <script>
 import { generateQuads, hardcodedAssetTypeToNameNodeMap } from '../utils'
 import clownface from 'clownface'
 import { dataset } from '@rdf-esm/dataset'
+import Footer from '../components/Footer.vue'
 
 export default {
     name: "AddAsset",
+    components: {
+        Footer
+    },
     async created() {
         console.log("this.$route.params.asset_type", this.$route.params.asset_type);
         const r = await fetch("http://localhost:8000/api/shacl-forms/"+this.$route.params.asset_type)
@@ -24,15 +29,10 @@ export default {
         const bodyShapeQuads = await generateQuads(asset_schema.body_shape)
         this.bodyShapeClown = clownface({dataset: dataset(bodyShapeQuads)})
                               .namedNode(hardcodedAssetTypeToNameNodeMap[this.$route.params.asset_type])
-        this.fetchThose = [
-            'http://localhost:8000/api/shacl-forms/extra-data/theme', 
-            'http://localhost:8000/api/shacl-forms/extra-data/keyword'
-        ]
     },
     data() {
         return {
-            bodyShapeClown: null,
-            fetchThose: []
+            bodyShapeClown: null
         }
     },
     methods: {
@@ -60,6 +60,7 @@ export default {
                     asset_name: responseJson.asset_name,
                     asset_type: responseJson.asset_type,
                     asset_uri: responseJson.asset_uri,
+                    asset_id: responseJson.asset_id,
                     isJustAdded: true,
                 } 
             })
