@@ -55,7 +55,7 @@ export const multiSelectEditor = {
             });
             (async () => {
                 let options = []
-                const res = await fetch(property.shape.pointer.out(dash.url).value);
+                const res = await fetch(property.shape.pointer.out(ns.dashEx.url).value);
                 const resJson = await res.json();
                 const quads = await this.generateQuads(resJson)
                 let subjects = dataset(quads).match(null, ns.rdf.type, null).quads
