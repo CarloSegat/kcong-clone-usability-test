@@ -28,7 +28,7 @@ import { thinBorderBottomCSS, alignItemsVerticalCenterCSS, hooverCSS, fieldConta
 import stringToStream from 'string-to-stream';
 
 
-@customElement('shaperone-form-gen')
+@customElement('semantic-form-gen')
 export class SemanticForm extends LitElement {
 
   static styles = css`
@@ -213,7 +213,7 @@ export class SemanticForm extends LitElement {
   private changeCallback() {
     
     let quadsWhereObjectIsEmptyString = this.resource?.dataset.match(null, null, literal(''))
-    console.log("🚀 . SemanticForm . changeCallback . quadsWhereObjectIsEmptyString", quadsWhereObjectIsEmptyString)
+    
     let resourceWithoutEmptyStrings = this.resource?.dataset;
     quadsWhereObjectIsEmptyString.quads.forEach(q => {
       resourceWithoutEmptyStrings.delete(q)
@@ -222,12 +222,12 @@ export class SemanticForm extends LitElement {
     });
 
     this.bodyForm.then(bf => {
-      console.log("🚀 . SemanticForm . changeCallback . bf", bf)
+      
       this.isValid = ! bf.state.hasErrors
       setTimeout(
         () => {
           this.bodyForm.then(bf => {
-            console.log("🚀 . SemanticForm . changeCallback . this.isValid", this.isValid)
+            
             return this.isValid = ! bf.state.hasErrors
           }
         )}, 

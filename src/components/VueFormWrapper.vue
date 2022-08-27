@@ -1,9 +1,9 @@
 <template>
-  <shaperone-form-gen
+  <semantic-form-gen
     .headerShape="headerShape"
     .bodyShape="bodyShape"
     @cefriel-form-submitted="emitSubmissionEvent"
-  ></shaperone-form-gen>
+  ></semantic-form-gen>
 </template>
 
 <script lang="ts">
@@ -16,23 +16,23 @@ import AnyPointer from "clownface";
 
 export default {
   name: "vue-form-wrapper",
-    methods: {
+  methods: {
     emitSubmissionEvent: function (e: any) {
       this.$emit("form-submitted", e.detail["data"]);
     },
-    },
-    props: {
-      /**
-       * The size of the button
-       * @values small, normal, large
-       */
-      headerShape: {
-        type: AnyPointer,
+  },
+  props: {
+    /**
+     * The size of the button
+     * @values small, normal, large
+     */
+    headerShape: {
+      type: AnyPointer,
       default: null,
-      },
-      bodyShape: null as any,
-      resource: null as any,
-      instancesURL: null as any,
     },
+    bodyShape: null as any,
+    resource: null as any,
+    instancesURL: null as any,
+  },
 };
 </script>
