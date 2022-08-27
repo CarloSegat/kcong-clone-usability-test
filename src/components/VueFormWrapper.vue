@@ -1,7 +1,6 @@
 <template>
   <semantic-form-gen
-    .headerShape="headerShape"
-    .bodyShape="bodyShape"
+    .shape="bodyShape"
     @cefriel-form-submitted="emitSubmissionEvent"
   ></semantic-form-gen>
 </template>

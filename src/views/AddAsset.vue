@@ -5,7 +5,7 @@
     </h1>
     <div v-if="bodyShapeClown !== null">
       <semantic-form-gen
-        .bodyShape="bodyShapeClown"
+        .shape="bodyShapeClown"
         @cefriel-form-submitted="formSubmittedCallback"
       >
       </semantic-form-gen>

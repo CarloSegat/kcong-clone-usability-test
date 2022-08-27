@@ -46,10 +46,9 @@
 
       <div style="margin-top: -6rem">
         <semantic-form-gen
-          v-if="bodyShapeClown !== null && this.asset !== null"
-          .bodyShape="bodyShapeClown"
+          v-if="clownfaceShape !== null && this.asset !== null"
+          .shape="clownfaceShape"
           .resource="assetClown"
-          .readonly="true"
         ></semantic-form-gen>
       </div>
     </div>
@@ -87,7 +86,7 @@ export default {
     );
     const temp2 = await assetTypeReq.json();
     const bodyShapeQuads = await generateQuads(temp2.body_shape);
-    this.bodyShapeClown = clownface({
+    this.clownfaceShape = clownface({
       dataset: dataset(bodyShapeQuads),
     }).namedNode(
       hardcodedAssetTypeToNameNodeMap[this.$route.params.asset_type]
@@ -96,7 +95,7 @@ export default {
   data() {
     return {
       assetClown: null,
-      bodyShapeClown: null,
+      clownfaceShape: null,
     };
   },
 };

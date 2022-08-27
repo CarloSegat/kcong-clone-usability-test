@@ -43,12 +43,9 @@ export class SemanticForm extends LitElement {
       border-color: #ff7575;
     }
   `;
-  
-  @property()
-  headerShape?: any;
 
   @property()
-  bodyShape!: AnyPointer;
+  shape!: AnyPointer;
 
   // DEFAULTED CONFIGS 
   @property({ reflect: true })
@@ -58,24 +55,19 @@ export class SemanticForm extends LitElement {
   isValid: boolean = false;
   
   @property()
-  propConflictStrategy: string = "keep-header"; // ignore
-  @property()
   resourceURI: NamedNode.NamedNode<string> = ns.cfrl.newResource;
   @property({ type: Object })
   resource?: AnyPointer;
   // END DEFAULTED CONFIGS 
 
-  @queryAsync('#header-form')
-  headerForm!: ShaperoneForm
-
   @queryAsync('#body-form')
-  bodyForm!: ShaperoneForm
+  formHTML!: ShaperoneForm
 
   @state()
   isHidden = true;
 
   protected shouldUpdate(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): boolean {
-    return this.bodyShape !== null
+    return this.shape !== null
   }
 
   async connectedCallback() {
@@ -104,9 +96,8 @@ export class SemanticForm extends LitElement {
     if (this.readonly) {
       this.makeAllPropertiesReadonly();
     }
-    // this.detectPropConflict();
-    let targetNode = await this.bodyForm
-    this.bodyForm.then(resolv => {
+    let targetNode = await this.formHTML
+    this.formHTML.then(resolv => {
       setTimeout((() => this.isHidden = false).bind(this), 250)
     })
 
@@ -114,11 +105,8 @@ export class SemanticForm extends LitElement {
 
   private makeAllPropertiesReadonly() {
 
-    this.bodyShape
+    this.shape
       .out(ns.sh.property)
-      .addOut(ns.dash.readOnly, true)
-
-    this.headerShape?.out(ns.sh.property)
       .addOut(ns.dash.readOnly, true)
   }
   protected firstUpdated(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
@@ -128,16 +116,6 @@ export class SemanticForm extends LitElement {
   }
   // Render the UI as a function of component state
   render() {
-    
-    let headerHTML = this.headerShape !== null ?
-      html`<shaperone-form
-      .id=${'header-form'}
-      .shapes=${this.headerShape}
-      .resource=${this.resource}
-      @changed=${this.changeCallback}
-      >
-    </shaperone-form>`
-      : html``
 
       // ?hidden=${this.bodyForm.attributes || true}
     
@@ -156,16 +134,14 @@ export class SemanticForm extends LitElement {
       ${alignItemsVerticalCenterCSS}
       ${thinBorderBottomCSS}
       ${hooverCSS}
-      ${fieldContainerCSS}
-
-      ${headerHTML}
+      ${fieldContainerCSS}  
 
       <div 
         ?hidden=${this.isHidden}
         style='margin-bottom: 8rem;'>
         <shaperone-form
           id="body-form"
-          .shapes=${this.bodyShape}
+          .shapes=${this.shape}
           .resource=${this.resource}
           @keydown=${this.changeCallback}
           @change=${this.changeCallback}
@@ -195,21 +171,6 @@ export class SemanticForm extends LitElement {
     this.dispatchEvent(event);
   }
 
-  private detectPropConflict() {
-
-    if (this.propConflictStrategy == 'ignore') return;
-    if (!this.headerShape) return;
-
-
-    if (this.propConflictStrategy == 'keep-header') {
-      // simply remove all the properties present in the header from the body
-      this.headerShape = this.headerShape
-        .deleteOut(ns.sh.property, this.bodyShape.out(ns.sh.property))
-    } else {
-      console.error("Invalid propConflictStrategy")
-    }
-  }
-
   private changeCallback() {
     
     let quadsWhereObjectIsEmptyString = this.resource?.dataset.match(null, null, literal(''))
@@ -221,12 +182,12 @@ export class SemanticForm extends LitElement {
       
     });
 
-    this.bodyForm.then(bf => {
+    this.formHTML.then(bf => {
       
       this.isValid = ! bf.state.hasErrors
       setTimeout(
         () => {
-          this.bodyForm.then(bf => {
+          this.formHTML.then(bf => {
             
             return this.isValid = ! bf.state.hasErrors
           }
@@ -238,18 +199,13 @@ export class SemanticForm extends LitElement {
   }
 
   private defaultResource(): AnyPointer {
-    // notice that the resource needs to be of both types expected by the
-    // header and body sape for validation to target it correctly
-    const typeExpectedByBody = this.bodyShape.out(ns.sh.targetClass)
-    const typeExpectedByHeader = this.headerShape?.out(ns.sh.targetClass)
+    // notice that the resource needs to be of the type expected by the shape to be validated
+    const typeExpectedByShape = this.shape.out(ns.sh.targetClass)
 
     let result = clownface({ dataset: dataset() })
       .namedNode(this.resourceURI.value.toString() + "/" + Math.floor(Math.random() * 999999))
-      .addOut(ns.rdf.type, typeExpectedByBody.term || typeExpectedByBody.terms[0])
+      .addOut(ns.rdf.type, typeExpectedByShape.term || typeExpectedByShape.terms[0])
 
-    if (typeExpectedByHeader) {
-      result.addOut(ns.rdf.type, typeExpectedByBody);
-    }
     return result
   }
 
