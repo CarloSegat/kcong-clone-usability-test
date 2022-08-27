@@ -75,15 +75,6 @@ export function property(renderer, { property }) {
         let validationMessageHTML = html``;
         if (property.validationResults.length > 0) {
             const validationClownface = property.validationResults[0].result.pointer;
-            // console.log("🚀 . generateHTMLValidationMessage . validationClownface", validationClownface)
-            // console.log("🚀 . generateHTMLValidationMessage . property", property)
-            // let temp = validationClownface.out(ns.sh.Severity)
-            // console.log("🚀 . generateHTMLValidationMessage . temp", temp)
-            // let temp2 = validationClownface.out(ns.sh.severity)
-            // console.log("🚀 . generateHTMLValidationMessage . temp2", temp2)
-            // let temp3 = validationClownface.out(ns.sh.resultSeverity)
-            // console.log("🚀 . generateHTMLValidationMessage . temp3", temp3)
-            
             const validationMessage = validationClownface.has(ns.sh.sourceShape, shapeNode.term).out(ns.sh.resultMessage).value;
             validationMessageHTML = html`<span style='color:var(--error-red);
         ;'>${validationMessage}</span>`;
@@ -105,6 +96,7 @@ export function property(renderer, { property }) {
     }
 
     function getThisShape() {
+        // a shape includes both nodeShape and propertyShape
         const cf = property.shape.pointer;
         const shapeNode = cf.has(ns.sh.name, property.name);
         return shapeNode;

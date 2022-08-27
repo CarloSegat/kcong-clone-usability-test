@@ -9,17 +9,17 @@
 <script lang="ts">
 //  .instancesURL="['http://localhost:3001/rdf/assetTypes']"
 
-import '@hydrofoil/shaperone-wc/shaperone-form'
-import { fetchShape } from '../utils'
-import {ns} from '../shacl-form-generator/namespaces'
-import AnyPointer from 'clownface'
+import "@hydrofoil/shaperone-wc/shaperone-form";
+import { fetchShape } from "../utils";
+import { ns } from "../shacl-form-generator/namespaces";
+import AnyPointer from "clownface";
 
 export default {
-    name: 'vue-form-wrapper',
+  name: "vue-form-wrapper",
     methods: {
-      emitSubmissionEvent: function(e: any){
-        this.$emit('form-submitted', e.detail['data'])
-      }
+    emitSubmissionEvent: function (e: any) {
+      this.$emit("form-submitted", e.detail["data"]);
+    },
     },
     props: {
       /**
@@ -28,11 +28,11 @@ export default {
        */
       headerShape: {
         type: AnyPointer,
-        default: null
+      default: null,
       },
       bodyShape: null as any,
       resource: null as any,
       instancesURL: null as any,
     },
-}
+};
 </script>
