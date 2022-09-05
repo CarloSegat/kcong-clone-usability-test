@@ -22,10 +22,8 @@ import {
   datePickerEditor,
   InstancesSelectEditor } from './customComponents';
 
-
 import { paperPlane } from './assets/icons/icons';
 import { thinBorderBottomCSS, alignItemsVerticalCenterCSS, hooverCSS, fieldContainerCSS } from './assets/style';
-import stringToStream from 'string-to-stream';
 
 
 @customElement('semantic-form-gen')
@@ -47,7 +45,6 @@ export class SemanticForm extends LitElement {
   @property()
   shape!: AnyPointer;
 
-  // DEFAULTED CONFIGS 
   @property({ reflect: true })
   readonly: boolean = false;
 
@@ -56,9 +53,9 @@ export class SemanticForm extends LitElement {
   
   @property()
   resourceURI: NamedNode.NamedNode<string> = ns.cfrl.newResource;
+
   @property({ type: Object })
   resource?: AnyPointer;
-  // END DEFAULTED CONFIGS 
 
   @queryAsync('#body-form')
   formHTML!: ShaperoneForm
@@ -73,16 +70,15 @@ export class SemanticForm extends LitElement {
   async connectedCallback() {
     super.connectedCallback()
   
-
     if (!this.resource) {
       this.resource = this.defaultResource();
     }
+
+    // This is how Shapeone is configured to use custom templates and components
     validation.setValidator(validate)
-
-    components.pushComponents({ nestedForm })
     renderer.setTemplates(template)
-
     components.pushComponents({ 
+      nestedForm,
       textFieldEditor, 
       fileInputEditor, 
       textArea, 
