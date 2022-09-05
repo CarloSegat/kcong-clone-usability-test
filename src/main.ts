@@ -7,6 +7,7 @@ import Home from "./views/Home.vue";
 import AssetsView from "./views/AssetsView.vue";
 import AddAsset from "./views/AddAsset.vue";
 import AssetView from "./views/AssetView.vue";
+import EditAssetView from "./views/EditAssetView.vue";
 
 const routes = [
   { 
@@ -28,6 +29,11 @@ const routes = [
     path: '/asset/:asset_type/:asset_name/:asset_id', 
     component: AssetView, 
     name: "AssetView" 
+  },
+  { 
+    path: '/asset/edit/:asset_type/:asset_name/:asset_id', 
+    component: EditAssetView, 
+    name: "EditAsset" 
   },
   { path: '/', 
     redirect: '/home' }

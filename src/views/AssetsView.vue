@@ -18,7 +18,6 @@
         <div><h2>Assets availbale:</h2></div>
 
         <div
-            v-if="assets && assets.length > 0"
             class="containerAssetInstances">
             <AssetInstanceComponent 
             v-for="asset in assets"
@@ -43,15 +42,7 @@
             :uri="''"
             :key="12121212"
                 @click="e => {
-                    this.$router.push({ 
-                        name: 'AssetView', 
-                        params: { 
-                            asset_name: asset.name,
-                            asset_type: asset.asset_type,
-                            asset_uri: asset.uri,
-                            asset_id: asset.id
-                        } 
-                    })
+                    this.$router.push({ name: 'AddAsset', params: { asset_type: this.$route.params.asset_type } })
                 }"
             >
             </AddAssetComponent>

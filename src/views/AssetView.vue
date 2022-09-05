@@ -1,21 +1,26 @@
 <template>
   <div class="contentSection">
     <h1>{{ this.$route.params.asset_name }}</h1>
-    <div
-      style="
-        display: grid;
-        grid-template-columns: 80% 20%;
-        grid-template-rows: auto auto auto auto;
-      "
-    >
-      <div>
-        <h3 style="width: fit-content">
-          Asset type: {{ this.$route.params.asset_type }}
-        </h3>
-      </div>
+    
+    <button
+        class="topButton"
+        @click="e => {
+                    this.$router.push({ 
+                        name: 'EditAsset', 
+                        params: { 
+                            asset_name: this.$route.params.asset_name,
+                            asset_type: this.$route.params.asset_type,
+                            asset_uri: this.$route.params.asset_uri,
+                            asset_id: this.$route.params.asset_id
+                        } 
+                    })
+                }"
+      >
+        Edit
+      </button>
 
       <button
-        class="kcongButton"
+        class="topButton"
         @click="
           (e) =>
             this.$router.push({
@@ -30,7 +35,7 @@
         Create {{ this.$route.params.isJustAdded ? "another" : "a new" }} Asset
       </button>
       <button
-        class="kcongButton"
+        class="topButton"
         @click="
           (e) =>
             this.$router.push({
@@ -44,14 +49,21 @@
         View All Assets
       </button>
 
-      <div style="margin-top: -6rem">
+      <div style="margin-top: 0.67rem;">
+        <h3 style="width: fit-content">
+          Asset type: {{ this.$route.params.asset_type }}
+        </h3>
+      </div>
+
+      <div>
         <semantic-form-gen
-          v-if="clownfaceShape !== null && this.asset !== null"
+          v-if="clownfaceShape !== null && this.assetClownface  !== null"
           .shape="clownfaceShape"
-          .resource="assetClown"
+          .resource="assetClownface"
+          .readonly="true"
         ></semantic-form-gen>
       </div>
-    </div>
+
   </div>
   <Footer />
 </template>
@@ -77,15 +89,17 @@ export default {
     );
     const temp = await assetReq.json();
     const assetQuads = await generateQuads(temp.rdf_data);
-    this.assetClown = clownface({ dataset: dataset(assetQuads) }).namedNode(
-      this.$route.params.asset_uri
+    this.assetClownface = clownface({ dataset: dataset(assetQuads) }).namedNode(
+      temp.uri
     );
+      console.log("🚀 ~ file: AssetView.vue ~ line 95 ~ created ~ this.$route.params.asset_uri", this.$route.params.asset_uri)
 
     const assetTypeReq = await fetch(
       "http://localhost:8000/api/shacl-forms/" + this.$route.params.asset_type
     );
     const temp2 = await assetTypeReq.json();
     const bodyShapeQuads = await generateQuads(temp2.body_shape);
+    console.log("🚀 ~ file: AssetView.vue ~ line 102 ~ created ~ bodyShapeQuads", bodyShapeQuads)
     this.clownfaceShape = clownface({
       dataset: dataset(bodyShapeQuads),
     }).namedNode(
@@ -94,7 +108,7 @@ export default {
   },
   data() {
     return {
-      assetClown: null,
+      assetClownface: null,
       clownfaceShape: null,
     };
   },
@@ -104,17 +118,16 @@ export default {
 <style scoped>
 @import "../assets/base.css";
 
-.kcongButton {
-  grid-column-start: 2;
+.topButton {
   height: fit-content;
-  min-height: 52px;
-  min-width: 92px;
-  padding: 1rem;
+  white-space: nowrap;
+  width: 12rem;
+  padding: 0.5rem;
   font-size: 1rem;
   border-radius: 0.33rem;
   border-width: thin;
   background-color: var(--vt-c-white-mute);
-  margin-bottom: 1rem;
+  margin-right: 1rem;
   box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
     0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 }

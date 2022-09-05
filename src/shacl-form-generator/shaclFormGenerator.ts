@@ -82,8 +82,6 @@ export class SemanticForm extends LitElement {
     components.pushComponents({ nestedForm })
     renderer.setTemplates(template)
 
-    console.log("🚀 . SemanticForm . connectedCallback . renderer.ready()", renderer.ready())
-
     components.pushComponents({ 
       textFieldEditor, 
       fileInputEditor, 
